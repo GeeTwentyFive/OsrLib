@@ -107,8 +107,6 @@ typedef struct {
         size_t replay_data_length;
         long long online_score_id;
 
-        char* _uncompressed_replay_data; // For freeing in OsrLib__Free()
-
 } OsrLib__Replay;
 
 
@@ -260,8 +258,8 @@ OsrLib__Error OsrLib__Parse(char* path, OsrLib__Replay* out) {
                         while (*ri != ',') ri++; ri++;
                         replay_data_length++;
                 }
+                free(uncompressed_data);
                 out->replay_data_length = replay_data_length;
-                out->_uncompressed_replay_data = uncompressed_data;
                 i += compressed_data_size;
         }
 
@@ -283,7 +281,6 @@ OsrLib__Error OsrLib__Parse(char* path, OsrLib__Replay* out) {
 
 void OsrLib__Free(OsrLib__Replay* replay) {
         free(replay->life_bar_graph);
-        free(replay->_uncompressed_replay_data);
         free(replay->replay_data);
 }
 
